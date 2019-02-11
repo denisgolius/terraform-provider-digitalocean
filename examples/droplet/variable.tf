@@ -39,6 +39,6 @@ variable "ubuntu1804" {
 }
 
 variable "ubuntu1810" {
-  description = "Default LTS"
+  description = "Default 18.10 LTS"
   default     = "ubuntu-18-10-x64"
 }
