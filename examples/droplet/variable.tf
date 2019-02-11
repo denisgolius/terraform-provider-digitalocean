@@ -63,17 +63,17 @@ variable "do_tor1" {
 
 # Default Os
 
-variable "ubuntu" {
-  description = "Default LTS"
+variable "ubuntu1604" {
+  description = "Default 16.04 LTS"
   default     = "ubuntu-16-04-x64"
 }
 
-variable "centos" {
-  description = "Default Centos"
-  default     = "centos-72-x64"
+variable "ubuntu1804" {
+  description = "Default 18.04 LTS"
+  default     = "ubuntu-18-04-x64"
 }
 
-variable "coreos" {
-  description = "Defaut Coreos"
-  default     = "coreos-899.17.0"
+variable "ubuntu1810" {
+  description = "Default LTS"
+  default     = "ubuntu-18-10-x64"
 }
