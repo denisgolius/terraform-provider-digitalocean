@@ -4,22 +4,30 @@ provider "digitalocean" {
   #
 }
 
-resource "digitalocean_droplet" "mywebserver" {
+resource "digitalocean_droplet" "pdbs" {
   # Obtain your ssh_key id number via your account. See Document https://developers.digitalocean.com/documentation/v2/#list-all-keys
   ssh_keys           = [12345678]         # Key example
-  image              = "${var.ubuntu}"
-  region             = "${var.do_ams3}"
-  size               = "s-1vcpu-1gb"
+  image              = "${var.ubuntu1804}"
+  region             = "${var.do_fra1}"
+  size               = "s-2vcpu-4gb"
   private_networking = true
-  backups            = true
+  backups            = false
   ipv6               = true
-  name               = "mywebserver-ams3"
+  name               = "pdbs-fr"
 
   provisioner "remote-exec" {
     inline = [
       "export PATH=$PATH:/usr/bin",
       "sudo apt-get update",
-      "sudo apt-get -y install nginx",
+      "cd /tmp",
+      "wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb",
+      "sudo dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb",
+      "sudo percona-release setup ps80",
+      "service apparmor stop",
+      "service apparmor teardown",
+      "/usr/sbin/update-rc.d -f apparmor remove",
+      "sudo update-rc.d -f apparmor remove",
+      "sudo apt-get install percona-server-server"
     ]
 
     connection {
@@ -31,14 +39,14 @@ resource "digitalocean_droplet" "mywebserver" {
   }
 }
 
-resource "digitalocean_domain" "mywebserver" {
+resource "digitalocean_domain" "pdbs" {
   name       = "www.mywebserver.com"
   ip_address = "${digitalocean_droplet.mywebserver.ipv4_address}"
 }
 
-resource "digitalocean_record" "mywebserver" {
+resource "digitalocean_record" "pdbs" {
   domain = "${digitalocean_domain.mywebserver.name}"
   type   = "A"
-  name   = "mywebserver"
+  name   = "pdbs"
   value  = "${digitalocean_droplet.mywebserver.ipv4_address}"
 }
